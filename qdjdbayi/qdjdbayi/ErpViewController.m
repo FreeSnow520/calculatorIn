@@ -18,7 +18,7 @@
 #define kScreenHeight (kScreenBounds.size.height)
 @interface ErpViewController ()<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, deleteBtnClicked>
 @property (nonatomic, strong) UITableView *tableView;
-
+@property (nonatomic, strong) UISegmentedControl * segmentedControl;
 @property (nonatomic, strong) NSMutableArray *dataSource;
 
 @end
@@ -30,15 +30,38 @@
     UIView *heavView1;
     UITextField *searchTF;
 }
+
+#pragma mark - Handler Methods
+- (void)indexDidChangeForSegmentedControl:(UISegmentedControl *)sender {
+    if (sender.selectedSegmentIndex == 0) {
+        
+    }else {
+        ContentViewController *vc = [[ContentViewController alloc]init];
+        vc.tag = @"aa";
+        [self presentViewController:vc animated:NO completion:nil];
+    }
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     headView = [[UIView alloc]initWithFrame:CGRectMake(kWidth1*0, 0, kWidth1*640, 64)];
     headView.backgroundColor = [UIColor colorWithRed:0/255.0f green:130/255.0f blue:255/255.0f alpha:1];
     [self.view addSubview:headView];
-    headLabel = [My LabelFrameX:220 andY:40 andW:200 andH:60 andTitle:@"项目投资管理" andTextColor:[UIColor whiteColor] andBgColor:nil andSize:30];
-    headLabel.textAlignment = NSTextAlignmentCenter;
-    [headView addSubview:headLabel];
+    _segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"投资管理", @"投资计算"]];
+    
+    _segmentedControl.frame = CGRectMake(kScreenWidth/ 2 - 90, headView.frame.size.height  - 30, 180, 30);
+    
+    _segmentedControl.selectedSegmentIndex = 0;
+    _segmentedControl.tintColor = [UIColor colorWithRed:252/255.0 green:245/255.0 blue:248/255.0 alpha:1];
+    
+    [_segmentedControl addTarget:self action:@selector(indexDidChangeForSegmentedControl:) forControlEvents:UIControlEventValueChanged];
+    
+    [headView addSubview:_segmentedControl];
+    
+//
+//    headLabel = [My LabelFrameX:220 andY:40 andW:200 andH:60 andTitle:@"项目投资管理" andTextColor:[UIColor whiteColor] andBgColor:nil andSize:30];
+//    headLabel.textAlignment = NSTextAlignmentCenter;
+//    [headView addSubview:headLabel];
 //    [headView addSubview:[My BtnwithImageFrameX:500 andY:40 andW:140 andH:60 andtitle:@"修改密码" andImage:nil andtitleColor:[UIColor whiteColor] andBGColor:[UIColor clearColor] target:self action:@selector(xiugaimimaClicked)]];
     
     self.view.backgroundColor =
@@ -60,15 +83,15 @@
     
     [heavView1 addSubview:[My BtnwithImageFrameX:500 andY:18 andW:100 andH:40 andtitle:@"搜索" andImage:nil andtitleColor:[UIColor colorWithRed:0/255.0f green:130/255.0f blue:255/255.0f alpha:1] andBGColor:nil target:self action:@selector(searchBtnClicked)]];
     
-    UIButton *footBtn = [[UIButton alloc]initWithFrame:CGRectMake(kWidth1* 400, kScreenHeight-kWidth1*145,kWidth1* 100,kWidth1* 100)];
-    footBtn.layer.cornerRadius = kWidth1* 100/2.0f;
-    footBtn.layer.borderColor = [UIColor darkGrayColor].CGColor;
-    footBtn.layer.borderWidth = 1.0f;
-    [footBtn addTarget:self action:@selector(addClicked) forControlEvents:UIControlEventTouchUpInside];
-    [footBtn setImage:[UIImage imageNamed:@"添加"] forState:UIControlStateNormal];
-    [self.view addSubview:footBtn];
+//    UIButton *footBtn = [[UIButton alloc]initWithFrame:CGRectMake(kWidth1* 400, kScreenHeight-kWidth1*145,kWidth1* 100,kWidth1* 100)];
+//    footBtn.layer.cornerRadius = kWidth1* 100/2.0f;
+//    footBtn.layer.borderColor = [UIColor darkGrayColor].CGColor;
+//    footBtn.layer.borderWidth = 1.0f;
+//    [footBtn addTarget:self action:@selector(addClicked) forControlEvents:UIControlEventTouchUpInside];
+//    [footBtn setImage:[UIImage imageNamed:@"添加"] forState:UIControlStateNormal];
+//    [self.view addSubview:footBtn];
     
-    UIButton *editPWDBtn = [[UIButton alloc]initWithFrame:CGRectMake(16, kScreenHeight-kWidth1*145,120,40)];
+    UIButton *editPWDBtn = [[UIButton alloc]initWithFrame:CGRectMake(16, kScreenHeight-kWidth1*145,kScreenWidth - 32,40)];
     editPWDBtn.layer.cornerRadius = 40/2.0f;
     editPWDBtn.backgroundColor = [UIColor colorWithRed:0/255.0f green:130/255.0f blue:255/255.0f alpha:1];
 //    editPWDBtn.layer.borderColor = [UIColor darkGrayColor].CGColor;
@@ -104,7 +127,7 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.view addSubview:self.tableView];
-    
+    _segmentedControl.selectedSegmentIndex = 0;
     
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc]init];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -132,6 +155,7 @@
     }];
     
 }
+
 
 - (NSMutableArray *)dataSource{
     
